@@ -157,6 +157,8 @@ fun Project.configureBaseExtension() {
             named("release") {
                 externalNativeBuild {
                     cmake {
+                        // ThinLTO 链接阶段内存峰值较高，低内存环境可用 -PlspatchNoLto=true 禁用
+                        val disableLto = (project.findProperty("lspatchNoLto") as String?).toBoolean()
                         val flags = arrayOf(
                             "-Wl,--exclude-libs,ALL",
                             "-ffunction-sections",
@@ -164,6 +166,7 @@ fun Project.configureBaseExtension() {
                             "-Wl,--gc-sections",
                             "-fno-unwind-tables",
                             "-fno-asynchronous-unwind-tables",
+                        ) + if (disableLto) emptyArray() else arrayOf(
                             "-flto=thin",
                             "-Wl,--thinlto-cache-policy,cache_size_bytes=300m",
                             "-Wl,--thinlto-cache-dir=${buildDir.absolutePath}/.lto-cache",

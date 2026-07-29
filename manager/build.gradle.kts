@@ -69,6 +69,13 @@ android {
     }
 }
 
+// AGP 8.7 的 optimizeReleaseRes 任务读取的资源包路径与 optimizeReleaseResources
+// 生成的不一致（缺少任务名子目录），导致 aapt2 报 I/O 错误，这里禁用该任务。
+// 资源优化（主要是 PNG 压缩）非必需，禁用后 APK 体积略增但功能不受影响。
+tasks.matching { it.name == "optimizeReleaseRes" }.configureEach {
+    enabled = false
+}
+
 afterEvaluate {
     android.applicationVariants.forEach { variant ->
         val variantLowered = variant.name.lowercase()

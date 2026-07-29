@@ -18,6 +18,12 @@ android {
     namespace = "org.lsposed.lspatch.metaloader"
 }
 
+// AGP 8.7 在 release 构建时会运行 optimizeReleaseRes，但本模块没有 res 资源，
+// aapt2 找不到 resources-release-optimize.ap_ 而失败，这里禁用该任务。
+tasks.matching { it.name == "optimizeReleaseRes" }.configureEach {
+    enabled = false
+}
+
 androidComponents.onVariants { variant ->
     val variantCapped = variant.name.replaceFirstChar { it.uppercase() }
     val variantLowered = variant.name.lowercase()
