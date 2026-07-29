@@ -55,7 +55,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.4.7"
+        kotlinCompilerExtensionVersion = "1.5.14"
     }
 
     namespace = "org.lsposed.lspatch"
@@ -120,6 +120,7 @@ dependencies {
     implementation(lspatch.google.accompanist.swiperefresh)
     implementation(libs.material)
     implementation(libs.gson)
+    implementation("androidx.documentfile:documentfile:1.0.1")
     implementation(lspatch.rikka.shizuku.api)
     implementation(lspatch.rikka.shizuku.provider)
     implementation(lspatch.rikka.refine)
