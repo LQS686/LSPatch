@@ -1,16 +1,16 @@
 [versions]
-room = "2.5.2"
-accompanist = "0.27.0"
-compose-destinations = "1.9.42-beta"
-shizuku = "13.1.2"
-hiddenapi-refine = "4.3.0"
-hiddenapi-stub = "4.2.0"
-compose-bom = "2023.06.01"
-kotlin = "1.8.21"
-ksp = "1.8.21-1.0.11"
-commons-io = "2.13.0"
+room = "2.6.1"
+accompanist = "0.34.0"
+compose-destinations = "1.10.2"
+shizuku = "13.1.5"
+hiddenapi-refine = "4.3.1"
+hiddenapi-stub = "4.3.1"
+compose-bom = "2024.06.00"
+kotlin = "1.9.24"
+ksp = "1.9.24-1.0.20"
+commons-io = "2.16.1"
 beust-jcommander = "1.82"
-google-gson = "2.10.1"
+google-gson = "2.11.0"
 
 [plugins]
 google-devtools-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
@@ -28,13 +28,13 @@ androidx-compose-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling
 androidx-compose-material-icons-extended = { module = "androidx.compose.material:material-icons-extended" }
 androidx-compose-material3 = { module = "androidx.compose.material3:material3" }
 
-androidx-navigation-compose = "androidx.navigation:navigation-compose:2.6.0"
+androidx-navigation-compose = "androidx.navigation:navigation-compose:2.7.7"
 
-androidx-lifecycle-viewmodel-compose = "androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1"
+androidx-lifecycle-viewmodel-compose = "androidx.lifecycle:lifecycle-viewmodel-compose:2.8.4"
 
-androidx-activity-compose = "androidx.activity:activity-compose:1.7.2"
+androidx-activity-compose = "androidx.activity:activity-compose:1.9.1"
 
-androidx-core-ktx = "androidx.core:core-ktx:1.10.1"
+androidx-core-ktx = "androidx.core:core-ktx:1.13.1"
 
 androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
