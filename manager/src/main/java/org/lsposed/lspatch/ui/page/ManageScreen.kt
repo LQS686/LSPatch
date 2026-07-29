@@ -3,15 +3,14 @@ package org.lsposed.lspatch.ui.page
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.google.accompanist.pager.ExperimentalPagerApi
-import com.google.accompanist.pager.HorizontalPager
-import com.google.accompanist.pager.rememberPagerState
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.result.ResultRecipient
@@ -23,7 +22,7 @@ import org.lsposed.lspatch.ui.page.manage.AppManageBody
 import org.lsposed.lspatch.ui.page.manage.AppManageFab
 import org.lsposed.lspatch.ui.page.manage.ModuleManageBody
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalPagerApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Destination
 @Composable
 fun ManageScreen(
@@ -31,7 +30,7 @@ fun ManageScreen(
     resultRecipient: ResultRecipient<SelectAppsScreenDestination, SelectAppsResult>
 ) {
     val scope = rememberCoroutineScope()
-    val pagerState = rememberPagerState()
+    val pagerState = rememberPagerState(pageCount = { 2 })
     Scaffold(
         topBar = { CenterTopBar(stringResource(BottomBarDestination.Manage.label)) },
         floatingActionButton = { if (pagerState.currentPage == 0) AppManageFab(navigator) }
@@ -62,7 +61,7 @@ fun ManageScreen(
                     }
                 }
 
-                HorizontalPager(count = 2, state = pagerState) { page ->
+                HorizontalPager(state = pagerState) { page ->
                     when (page) {
                         0 -> AppManageBody(navigator, resultRecipient)
                         1 -> ModuleManageBody()

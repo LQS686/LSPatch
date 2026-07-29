@@ -10,13 +10,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
@@ -28,7 +27,7 @@ import androidx.compose.ui.unit.dp
 
 private const val TAG = "SearchBar"
 
-@OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchAppBar(
     title: @Composable () -> Unit,
@@ -102,7 +101,7 @@ fun SearchAppBar(
         navigationIcon = {
             IconButton(
                 onClick = onBackClick,
-                content = { Icon(Icons.Outlined.ArrowBack, null) }
+                content = { Icon(Icons.AutoMirrored.Outlined.ArrowBack, null) }
             )
         },
         actions = {

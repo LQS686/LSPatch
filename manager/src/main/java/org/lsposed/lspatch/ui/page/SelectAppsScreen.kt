@@ -5,7 +5,6 @@ import android.os.Parcelable
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -14,14 +13,13 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Done
 import androidx.compose.material3.*
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.text.toLowerCase
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.google.accompanist.swiperefresh.SwipeRefresh
-import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.result.ResultBackNavigator
 import kotlinx.parcelize.Parcelize
@@ -92,12 +90,12 @@ fun SelectAppsScreen(
             }
         }
     ) { innerPadding ->
-        SwipeRefresh(
-            state = rememberSwipeRefreshState(viewModel.isRefreshing),
-            onRefresh = { viewModel.filterAppList(true, filter) },
+        PullToRefreshBox(
             modifier = Modifier
                 .padding(innerPadding)
-                .fillMaxSize()
+                .fillMaxSize(),
+            isRefreshing = viewModel.isRefreshing,
+            onRefresh = { viewModel.filterAppList(true, filter) }
         ) {
             if (multiSelect) MultiSelect()
             else SingleSelect {
@@ -115,7 +113,6 @@ private fun MultiSelectFab(onClick: () -> Unit) {
     )
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun SingleSelect(onSelect: (AppInfo) -> Unit) {
     val viewModel = viewModel<SelectAppsViewModel>()
@@ -126,7 +123,7 @@ private fun SingleSelect(onSelect: (AppInfo) -> Unit) {
         ) {
             AppItem(
                 modifier = Modifier
-                    .animateItemPlacement(spring(stiffness = Spring.StiffnessLow))
+                    .animateItem(spring(stiffness = Spring.StiffnessLow))
                     .clickable { onSelect(it) },
                 icon = LSPPackageManager.getIcon(it),
                 label = it.label,
@@ -136,7 +133,6 @@ private fun SingleSelect(onSelect: (AppInfo) -> Unit) {
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun MultiSelect() {
     val viewModel = viewModel<SelectAppsViewModel>()
@@ -148,7 +144,7 @@ private fun MultiSelect() {
             val checked = viewModel.multiSelected.contains(it)
             AppItem(
                 modifier = Modifier
-                    .animateItemPlacement(spring(stiffness = Spring.StiffnessLow))
+                    .animateItem(spring(stiffness = Spring.StiffnessLow))
                     .clickable {
                         if (checked) viewModel.multiSelected.remove(it)
                         else viewModel.multiSelected.add(it)

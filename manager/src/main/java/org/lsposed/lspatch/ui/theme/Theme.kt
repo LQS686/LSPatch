@@ -6,17 +6,21 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
-import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsControllerCompat
+import org.lsposed.lspatch.config.Configs
 
 @Composable
-fun LSPTheme(
-    isDarkTheme: Boolean = isSystemInDarkTheme(),
-    enableDynamicColor: Boolean = true,
-    content: @Composable () -> Unit
-) {
+fun LSPTheme(content: @Composable () -> Unit) {
+    val isDarkTheme = when (Configs.themeMode) {
+        "light" -> false
+        "dark" -> true
+        else -> isSystemInDarkTheme()
+    }
+    val enableDynamicColor = Configs.dynamicColor
+
     val colorScheme = when {
         enableDynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
             val context = LocalContext.current
@@ -28,8 +32,11 @@ fun LSPTheme(
     val view = LocalView.current
     if (!view.isInEditMode) {
         SideEffect {
-            (view.context as Activity).window.statusBarColor = colorScheme.background.toArgb()
-            ViewCompat.getWindowInsetsController(view)?.isAppearanceLightStatusBars = !isDarkTheme
+            val window = (view.context as Activity).window
+            // edge-to-edge: 不再手动着色状态栏（API 35 起 statusBarColor 已弃用），
+            // 仅根据主题明暗切换状态栏图标外观。
+            WindowCompat.setDecorFitsSystemWindows(window, false)
+            WindowInsetsControllerCompat(window, view).isAppearanceLightStatusBars = !isDarkTheme
         }
     }
 
