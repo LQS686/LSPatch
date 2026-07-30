@@ -16,11 +16,10 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.ramcosta.composedestinations.DestinationsNavHost
-import com.ramcosta.composedestinations.spec.DestinationSpec
+import com.ramcosta.composedestinations.spec.TypedRoute
+import com.ramcosta.composedestinations.utils.currentDestinationAsState
 import org.lsposed.lspatch.ui.page.BottomBarDestination
 import org.lsposed.lspatch.ui.page.NavGraphs
-import org.lsposed.lspatch.ui.page.currentDestinationAsState
-import org.lsposed.lspatch.ui.page.startDestination
 import org.lsposed.lspatch.ui.theme.LSPTheme
 import org.lsposed.lspatch.ui.util.LocalSnackbarHost
 
@@ -53,8 +52,8 @@ class MainActivity : ComponentActivity() {
 @SuppressLint("RestrictedApi")
 @Composable
 private fun BottomBar(navController: NavHostController) {
-    val currentDestination: DestinationSpec = navController.currentDestinationAsState().value
-        ?: NavGraphs.root.startDestination
+    val currentDestination: TypedRoute<*> = navController.currentDestinationAsState().value
+        ?: NavGraphs.root.startRoute
     var topDestination by rememberSaveable { mutableStateOf(currentDestination.route) }
     LaunchedEffect(currentDestination) {
         val queue = navController.currentBackStack.value

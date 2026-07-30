@@ -88,7 +88,7 @@ fun RepoScreen() {
                     items = viewModel.sources,
                     key = { it.url }
                 ) { source ->
-                    SourceItem(source) { viewModel.openLink(source.url) }
+                    SourceItem(source = source, onClick = { viewModel.openLink(source.url) })
                 }
 
                 item {

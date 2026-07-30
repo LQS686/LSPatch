@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package org.lsposed.lspatch.ui.page
 
 import android.content.ClipData

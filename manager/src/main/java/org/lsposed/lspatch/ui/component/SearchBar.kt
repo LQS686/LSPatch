@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.dp
 
 private const val TAG = "SearchBar"
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchAppBar(
     title: @Composable () -> Unit,
@@ -117,6 +118,7 @@ fun SearchAppBar(
 }
 
 @Preview
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun SearchAppBarPreview() {
     var searchText by remember { mutableStateOf("") }

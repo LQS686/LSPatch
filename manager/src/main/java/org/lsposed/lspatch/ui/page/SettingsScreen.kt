@@ -396,6 +396,8 @@ private fun DataSection() {
             formatSize(calcDirSize(context.cacheDir))
         }
     }
+    val cacheClearedMsg = stringResource(R.string.settings_cache_cleared)
+    val cacheClearFailedMsg = stringResource(R.string.settings_cache_clear_failed)
     SettingsItem(
         modifier = Modifier.clickable {
             scope.launch {
@@ -403,8 +405,8 @@ private fun DataSection() {
                     deleteRecursively(context.cacheDir)
                 }
                 cacheSize = formatSize(0)
-                val msg = if (deleted) stringResource(R.string.settings_cache_cleared)
-                else stringResource(R.string.settings_cache_clear_failed)
+                val msg = if (deleted) cacheClearedMsg
+                else cacheClearFailedMsg
                 snackbarHost.showSnackbar(msg)
             }
         },
@@ -454,7 +456,7 @@ private fun AboutSection() {
     )
     HtmlText(
         modifier = Modifier.padding(horizontal = 16.dp),
-        text = sourceHtml
+        html = sourceHtml
     )
 }
 
