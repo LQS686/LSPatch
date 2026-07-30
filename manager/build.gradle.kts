@@ -12,6 +12,7 @@ plugins {
     alias(lspatch.plugins.google.devtools.ksp)
     alias(lspatch.plugins.rikka.tools.refine)
     alias(lspatch.plugins.kotlin.android)
+    alias(lspatch.plugins.compose.compiler)
     id("kotlin-parcelize")
 }
 
@@ -52,10 +53,6 @@ android {
     buildFeatures {
         compose = true
         buildConfig = true
-    }
-
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.14"
     }
 
     namespace = "org.lsposed.lspatch"
@@ -122,12 +119,9 @@ dependencies {
     implementation(libs.androidx.preference)
     implementation(lspatch.androidx.room.ktx)
     implementation(lspatch.androidx.room.runtime)
-    implementation(lspatch.google.accompanist.navigation.animation)
-    implementation(lspatch.google.accompanist.pager)
-    implementation(lspatch.google.accompanist.swiperefresh)
     implementation(libs.material)
     implementation(libs.gson)
-    implementation("androidx.documentfile:documentfile:1.0.1")
+    implementation("androidx.documentfile:documentfile:1.1.0")
     implementation(lspatch.rikka.shizuku.api)
     implementation(lspatch.rikka.shizuku.provider)
     implementation(lspatch.rikka.refine)
@@ -136,4 +130,8 @@ dependencies {
     implementation(libs.hiddenapibypass)
     ksp(lspatch.androidx.room.compiler)
     ksp(lspatch.raamcosta.compose.destinations.ksp)
+}
+
+ksp {
+    arg("compose-destinations.codeGenPackageName", "org.lsposed.lspatch.ui.page")
 }

@@ -32,7 +32,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ramcosta.composedestinations.annotation.Destination
-import com.ramcosta.composedestinations.annotation.RootNavGraph
+import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlinx.coroutines.launch
 import org.lsposed.lspatch.R
@@ -45,9 +45,7 @@ import org.lsposed.lspatch.ui.util.LocalSnackbarHost
 import org.lsposed.lspatch.util.ShizukuApi
 import rikka.shizuku.Shizuku
 
-@OptIn(ExperimentalMaterial3Api::class)
-@RootNavGraph(start = true)
-@Destination
+@Destination<RootGraph>(start = true)
 @Composable
 fun HomeScreen(navigator: DestinationsNavigator) {
     // Install from intent
@@ -92,7 +90,6 @@ private val listener: (Int, Int) -> Unit = { _, grantResult ->
     ShizukuApi.isPermissionGranted = grantResult == PackageManager.PERMISSION_GRANTED
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun ShizukuCard() {
     LaunchedEffect(Unit) {
@@ -168,7 +165,6 @@ private val device = buildString {
     append(" " + Build.MODEL + " ")
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun InfoCard() {
     val context = LocalContext.current
@@ -218,7 +214,6 @@ private fun InfoCard() {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Preview
 @Composable
 private fun SupportCard() {

@@ -34,11 +34,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.result.NavResult
 import com.ramcosta.composedestinations.result.ResultRecipient
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import org.lsposed.lspatch.R
 import org.lsposed.lspatch.lspApp
 import org.lsposed.lspatch.ui.component.AnywhereDropdown
@@ -63,8 +65,7 @@ const val ACTION_STORAGE = 0
 const val ACTION_APPLIST = 1
 const val ACTION_INTENT_INSTALL = 2
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Destination
+@Destination<RootGraph>
 @Composable
 fun NewPatchScreen(
     navigator: DestinationsNavigator,
@@ -73,6 +74,7 @@ fun NewPatchScreen(
     data: Uri? = null
 ) {
     val viewModel = viewModel<NewPatchViewModel>()
+    val scope = rememberCoroutineScope()
     val snackbarHost = LocalSnackbarHost.current
     val errorUnknown = stringResource(R.string.error_unknown)
     val storageLauncher = rememberLauncherForActivityResult(ActivityResultContracts.OpenMultipleDocuments()) { apks ->
@@ -80,15 +82,16 @@ fun NewPatchScreen(
             navigator.navigateUp()
             return@rememberLauncherForActivityResult
         }
-        runBlocking {
-            LSPPackageManager.getAppInfoFromApks(apks)
-                .onSuccess {
+        scope.launch(Dispatchers.IO) {
+            val result = LSPPackageManager.getAppInfoFromApks(apks)
+            withContext(Dispatchers.Main) {
+                result.onSuccess {
                     viewModel.dispatch(ViewAction.ConfigurePatch(it.first()))
-                }
-                .onFailure {
+                }.onFailure {
                     lspApp.globalScope.launch { snackbarHost.showSnackbar(it.message ?: errorUnknown) }
                     navigator.navigateUp()
                 }
+            }
         }
     }
 
@@ -99,19 +102,22 @@ fun NewPatchScreen(
             if (apks.isEmpty()) {
                 return@rememberLauncherForActivityResult
             }
-            runBlocking {
-                LSPPackageManager.getAppInfoFromApks(apks).onSuccess { it ->
-                    viewModel.embeddedModules = it.filter { it.isXposedModule }.ifEmpty {
-                        lspApp.globalScope.launch {
-                            snackbarHost.showSnackbar(noXposedModules)
+            scope.launch(Dispatchers.IO) {
+                val result = LSPPackageManager.getAppInfoFromApks(apks)
+                withContext(Dispatchers.Main) {
+                    result.onSuccess { it ->
+                        viewModel.embeddedModules = it.filter { it.isXposedModule }.ifEmpty {
+                            lspApp.globalScope.launch {
+                                snackbarHost.showSnackbar(noXposedModules)
+                            }
+                            return@onSuccess
                         }
-                        return@onSuccess
-                    }
-                }.onFailure {
-                    lspApp.globalScope.launch {
-                        snackbarHost.showSnackbar(
-                            it.message ?: errorUnknown
-                        )
+                    }.onFailure {
+                        lspApp.globalScope.launch {
+                            snackbarHost.showSnackbar(
+                                it.message ?: errorUnknown
+                            )
+                        }
                     }
                 }
             }
@@ -134,17 +140,20 @@ fun NewPatchScreen(
                     }
 
                     ACTION_INTENT_INSTALL -> {
-                        runBlocking {
-                            data?.let { uri ->
-                                LSPPackageManager.getAppInfoFromApks(listOf(uri)).onSuccess {
-                                    viewModel.dispatch(ViewAction.ConfigurePatch(it.first()))
-                                }.onFailure {
-                                    lspApp.globalScope.launch {
-                                        snackbarHost.showSnackbar(
-                                            it.message ?: errorUnknown
-                                        )
+                        data?.let { uri ->
+                            scope.launch(Dispatchers.IO) {
+                                val result = LSPPackageManager.getAppInfoFromApks(listOf(uri))
+                                withContext(Dispatchers.Main) {
+                                    result.onSuccess {
+                                        viewModel.dispatch(ViewAction.ConfigurePatch(it.first()))
+                                    }.onFailure {
+                                        lspApp.globalScope.launch {
+                                            snackbarHost.showSnackbar(
+                                                it.message ?: errorUnknown
+                                            )
+                                        }
+                                        navigator.navigateUp()
                                     }
-                                    navigator.navigateUp()
                                 }
                             }
                         }
@@ -246,7 +255,6 @@ fun NewPatchScreen(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun ConfiguringTopBar(onBackClick: () -> Unit) {
     TopAppBar(

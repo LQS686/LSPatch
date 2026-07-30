@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.result.ResultRecipient
 import kotlinx.coroutines.launch
@@ -22,8 +23,7 @@ import org.lsposed.lspatch.ui.page.manage.AppManageBody
 import org.lsposed.lspatch.ui.page.manage.AppManageFab
 import org.lsposed.lspatch.ui.page.manage.ModuleManageBody
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Destination
+@Destination<RootGraph>
 @Composable
 fun ManageScreen(
     navigator: DestinationsNavigator,

@@ -29,7 +29,6 @@ import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Palette
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -53,6 +52,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.annotation.RootGraph
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -73,8 +73,7 @@ import java.security.GeneralSecurityException
 import java.security.KeyStore
 import kotlin.math.roundToLong
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Destination
+@Destination<RootGraph>
 @Composable
 fun SettingsScreen() {
     val snackbarHost = LocalSnackbarHost.current
@@ -103,7 +102,6 @@ fun SettingsScreen() {
 
 // ============ Appearance ============
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun AppearanceSection() {
     SettingsCategoryHeader(stringResource(R.string.settings_appearance))
@@ -158,7 +156,6 @@ private fun AppearanceSection() {
 
 // ============ Keystore ============
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun KeyStore() {
     val context = LocalContext.current

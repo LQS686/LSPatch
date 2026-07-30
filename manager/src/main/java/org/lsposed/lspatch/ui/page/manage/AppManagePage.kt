@@ -12,9 +12,14 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.KeyboardCapslock
+import androidx.compose.material.icons.outlined.Apps
+import androidx.compose.material.icons.outlined.Search
+import androidx.compose.material3.Icon
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -72,18 +77,37 @@ fun AppManageBody(
     val scope = rememberCoroutineScope()
 
     if (viewModel.appList.isEmpty()) {
-        Box(Modifier.fillMaxSize()) {
-            Text(
-                modifier = Modifier.align(Alignment.Center),
-                text = run {
-                    if (LSPPackageManager.appList.isEmpty()) stringResource(R.string.manage_loading)
-                    else stringResource(R.string.manage_no_apps)
-                },
-                fontFamily = FontFamily.Serif,
-                style = MaterialTheme.typography.headlineSmall
-            )
+        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Icon(
+                    Icons.Outlined.Apps,
+                    contentDescription = null,
+                    modifier = Modifier.size(64.dp),
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
+                )
+                Spacer(Modifier.height(16.dp))
+                Text(
+                    text = if (LSPPackageManager.appList.isEmpty()) stringResource(R.string.manage_loading)
+                    else stringResource(R.string.manage_no_apps),
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                if (LSPPackageManager.appList.isNotEmpty()) {
+                    Spacer(Modifier.height(8.dp))
+                    Text(
+                        text = stringResource(R.string.manage_no_apps_desc),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
+                    )
+                }
+            }
         }
     } else {
+        var searchText by remember { mutableStateOf("") }
+        val filteredAppList = if (searchText.isBlank()) viewModel.appList else viewModel.appList.filter {
+            it.first.label.contains(searchText, ignoreCase = true) ||
+                it.first.app.packageName.contains(searchText, ignoreCase = true)
+        }
         var scopeApp by rememberSaveable { mutableStateOf("") }
         resultRecipient.onNavResult {
             if (it is NavResult.Value) {
@@ -136,9 +160,28 @@ fun AppManageBody(
             }
         }
 
-        LazyColumn(Modifier.fillMaxHeight()) {
+        Column(Modifier.fillMaxSize()) {
+            OutlinedTextField(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 8.dp),
+                value = searchText,
+                onValueChange = { searchText = it },
+                placeholder = { Text(stringResource(R.string.manage_search_apps)) },
+                leadingIcon = { Icon(Icons.Outlined.Search, null) },
+                trailingIcon = {
+                    if (searchText.isNotEmpty()) {
+                        IconButton(onClick = { searchText = "" }) {
+                            Icon(Icons.Filled.Close, null)
+                        }
+                    }
+                },
+                singleLine = true,
+                shape = RoundedCornerShape(24.dp)
+            )
+            LazyColumn(Modifier.fillMaxHeight()) {
             items(
-                items = viewModel.appList,
+                items = filteredAppList,
                 key = { it.first.app.packageName }
             ) {
                 val isRolling = it.second.useManager && it.second.lspConfig.VERSION_CODE >= Constants.MIN_ROLLING_VERSION_CODE
@@ -251,6 +294,7 @@ fun AppManageBody(
                     )
                 }
             }
+        }
         }
     }
 }

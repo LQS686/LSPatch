@@ -4,12 +4,26 @@ import android.content.Intent
 import android.net.Uri
 import android.provider.Settings
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.outlined.Extension
+import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -21,6 +35,7 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import org.lsposed.lspatch.R
 import org.lsposed.lspatch.ui.component.AnywhereDropdown
@@ -33,21 +48,59 @@ fun ModuleManageBody() {
     val context = LocalContext.current
     val viewModel = viewModel<ModuleManageViewModel>()
     if (viewModel.appList.isEmpty()) {
-        Box(Modifier.fillMaxSize()) {
-            Text(
-                modifier = Modifier.align(Alignment.Center),
-                text = run {
-                    if (LSPPackageManager.appList.isEmpty()) stringResource(R.string.manage_loading)
-                    else stringResource(R.string.manage_no_modules)
-                },
-                fontFamily = FontFamily.Serif,
-                style = MaterialTheme.typography.headlineSmall
-            )
+        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Icon(
+                    Icons.Outlined.Extension,
+                    contentDescription = null,
+                    modifier = Modifier.size(64.dp),
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
+                )
+                Spacer(Modifier.height(16.dp))
+                Text(
+                    text = if (LSPPackageManager.appList.isEmpty()) stringResource(R.string.manage_loading)
+                    else stringResource(R.string.manage_no_modules),
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                if (LSPPackageManager.appList.isNotEmpty()) {
+                    Spacer(Modifier.height(8.dp))
+                    Text(
+                        text = stringResource(R.string.manage_no_modules_desc),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
+                    )
+                }
+            }
         }
     } else {
-        LazyColumn(Modifier.fillMaxHeight()) {
-            items(
-                items = viewModel.appList,
+        var searchText by remember { mutableStateOf("") }
+        val filteredModuleList = if (searchText.isBlank()) viewModel.appList else viewModel.appList.filter {
+            it.first.label.contains(searchText, ignoreCase = true) ||
+                it.first.app.packageName.contains(searchText, ignoreCase = true)
+        }
+        Column(Modifier.fillMaxSize()) {
+            OutlinedTextField(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 8.dp),
+                value = searchText,
+                onValueChange = { searchText = it },
+                placeholder = { Text(stringResource(R.string.manage_search_modules)) },
+                leadingIcon = { Icon(Icons.Outlined.Search, null) },
+                trailingIcon = {
+                    if (searchText.isNotEmpty()) {
+                        IconButton(onClick = { searchText = "" }) {
+                            Icon(Icons.Filled.Close, null)
+                        }
+                    }
+                },
+                singleLine = true,
+                shape = RoundedCornerShape(24.dp)
+            )
+            LazyColumn(Modifier.fillMaxHeight()) {
+                items(
+                    items = filteredModuleList,
                 key = { it.first.app.packageName }
             ) {
                 var expanded by remember { mutableStateOf(false) }
@@ -103,6 +156,7 @@ fun ModuleManageBody() {
                     )
                 }
             }
+        }
         }
     }
 }

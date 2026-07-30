@@ -1,5 +1,6 @@
 package org.lsposed.lspatch.ui.activity
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -15,11 +16,11 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.ramcosta.composedestinations.DestinationsNavHost
+import com.ramcosta.composedestinations.spec.DestinationSpec
 import org.lsposed.lspatch.ui.page.BottomBarDestination
 import org.lsposed.lspatch.ui.page.NavGraphs
-import org.lsposed.lspatch.ui.page.appCurrentDestinationAsState
-import org.lsposed.lspatch.ui.page.destinations.Destination
-import org.lsposed.lspatch.ui.page.startAppDestination
+import org.lsposed.lspatch.ui.page.currentDestinationAsState
+import org.lsposed.lspatch.ui.page.startDestination
 import org.lsposed.lspatch.ui.theme.LSPTheme
 import org.lsposed.lspatch.ui.util.LocalSnackbarHost
 
@@ -49,19 +50,24 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+@SuppressLint("RestrictedApi")
 @Composable
 private fun BottomBar(navController: NavHostController) {
-    val currentDestination: Destination = navController.appCurrentDestinationAsState().value
-        ?: NavGraphs.root.startAppDestination
+    val currentDestination: DestinationSpec = navController.currentDestinationAsState().value
+        ?: NavGraphs.root.startDestination
     var topDestination by rememberSaveable { mutableStateOf(currentDestination.route) }
     LaunchedEffect(currentDestination) {
         val queue = navController.currentBackStack.value
-        if (queue.size == 2) topDestination = queue[1].destination.route!!
-        else if (queue.size > 2) topDestination = queue[2].destination.route!!
+        // queue[0] = start destination (HomeScreen)
+        // queue[1] = tab-level destination (always the bottom-bar tab the user is under)
+        // queue[2+] = nested destinations within that tab (if any)
+        // When navigating to a nested screen, queue[1] is still the parent tab,
+        // so always use queue[1] as the selected tab when it exists.
+        if (queue.size >= 2) topDestination = queue[1].destination.route!!
     }
 
     NavigationBar(tonalElevation = 8.dp) {
-        BottomBarDestination.values().forEach { destination ->
+        BottomBarDestination.entries.forEach { destination ->
             NavigationBarItem(
                 selected = topDestination == destination.direction.route,
                 onClick = {

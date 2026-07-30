@@ -32,6 +32,7 @@
     <string name="screen_manage">Manage</string>
     <string name="manage_loading">Loading</string>
     <string name="manage_no_apps">No patched apps yet</string>
+    <string name="manage_no_apps_desc">Tap the + button to patch your first app</string>
     <string name="manage_rolling">Rolling</string>
     <string name="manage_update_loader">Update loader</string>
     <string name="manage_update_loader_successfully">Update successfully</string>
@@ -42,6 +43,9 @@
     <string name="manage_optimize_failed">Optimize failed</string>
     <string name="manage_uninstall_successfully">Uninstall successfully</string>
     <string name="manage_no_modules">No modules yet</string>
+    <string name="manage_no_modules_desc">Install Xposed modules to see them here</string>
+    <string name="manage_search_apps">Search apps</string>
+    <string name="manage_search_modules">Search modules</string>
     <string name="manage_module_settings">Module settings</string>
     <string name="manage_app_info">App info</string>
 

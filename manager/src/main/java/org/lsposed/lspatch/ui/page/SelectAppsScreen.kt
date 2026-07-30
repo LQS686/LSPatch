@@ -21,6 +21,7 @@ import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.text.toLowerCase
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.result.ResultBackNavigator
 import kotlinx.parcelize.Parcelize
 import org.lsposed.lspatch.R
@@ -37,7 +38,7 @@ sealed class SelectAppsResult : Parcelable {
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Destination
+@Destination<RootGraph>
 @Composable
 fun SelectAppsScreen(
     navigator: ResultBackNavigator<SelectAppsResult>,

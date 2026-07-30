@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.annotation.RootGraph
 import org.lsposed.lspatch.R
 import org.lsposed.lspatch.ui.component.CenterTopBar
 import org.lsposed.lspatch.ui.component.EmptyHint
@@ -30,7 +31,7 @@ import org.lsposed.lspatch.ui.component.SourceItem
 import org.lsposed.lspatch.ui.viewmodel.RepoViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Destination
+@Destination<RootGraph>
 @Composable
 fun RepoScreen() {
     val viewModel: RepoViewModel = viewModel()
