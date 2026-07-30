@@ -33,6 +33,7 @@
     <string name="screen_manage">管理</string>
     <string name="manage_loading">加载中</string>
     <string name="manage_no_apps">尚无已修补的应用</string>
+    <string name="manage_no_apps_desc">点击 + 按钮修补你的第一个应用</string>
     <string name="manage_rolling">滚动</string>
     <string name="manage_update_loader">更新加载器</string>
     <string name="manage_update_loader_successfully">更新成功</string>
@@ -43,6 +44,9 @@
     <string name="manage_optimize_failed">优化失败</string>
     <string name="manage_uninstall_successfully">卸载成功</string>
     <string name="manage_no_modules">尚无模块</string>
+    <string name="manage_no_modules_desc">安装 Xposed 模块后会在此处显示</string>
+    <string name="manage_search_apps">搜索应用</string>
+    <string name="manage_search_modules">搜索模块</string>
     <string name="manage_module_settings">模块设置</string>
     <string name="manage_app_info">应用信息</string>
 
