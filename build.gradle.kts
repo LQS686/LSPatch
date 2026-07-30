@@ -104,7 +104,7 @@ fun Project.configureBaseExtension() {
                 cmake {
                     arguments += "-DEXTERNAL_ROOT=${File(rootDir.absolutePath, "core/external")}"
                     arguments += "-DCORE_ROOT=${File(rootDir.absolutePath, "core/core/src/main/jni")}"
-                    val defaultAbis = listOf("arm64-v8a", "armeabi-v7a", "x86", "x86_64")
+                    val defaultAbis = listOf("arm64-v8a")
                     val lspatchAbi = (project.findProperty("lspatchAbi") as String?)
                         ?.split(",")?.map { it.trim() }?.filter { it.isNotEmpty() }
                         ?: defaultAbis
